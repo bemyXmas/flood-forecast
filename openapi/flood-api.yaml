@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Flood Forecast API
+  description:
+    This API provides flood forecast data happening in Thailand.
+    * Rain and flood warning gathered by google form.
+    * Weather report every 3 hours by OpenWeatherAPI.
+    * Flood forecast data by WCPC.
+    * Dam water level by egat_dam.
+  version: 3.0.0
+servers:
+  - url: /flood-forecast-api
+paths:
+  /weather-report:
+    get:
+      summary: Returns a list of flood forecast data happening in Thailand.
+      tags:
+        - weatherreport
+      operationId: controller.get_weather_report
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WeatherReport'
+  /weather-report/{country}:
+    parameters:
+    - name: country
+      in: path
+      required: true
+      description: country name
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified country weather report
+      tags: 
+        - weatherreport
+      operationId: controller.get_weather_report_details
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherReport'
+  /damlevel:
+    get:
+      summary: Returns a list of dam water level in sector of Thailand.
+      tags:
+        - damlevel
+      operationId: controller.get_dam_level
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DamLevel'
+  /damlevel/{sector}:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: sector name
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified sector
+      tags: 
+        - damlevel
+      operationId: controller.get_dam_level_details
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DamLevel'
+
+components:
+  schemas:
+    WeatherReport:
+      type: object
+      properties:
+        country:
+          type: string
+        main:
+          type: string
+        humidity:
+          type: integer
+        description:
+          type: string
+    DamLevel:
+      type: object
+      properties:
+        date:
+          type: string
+        sector:
+          type: string
+        water_retention:
+          type: integer
+        can_reveive_more:
+          type: integer
+    
