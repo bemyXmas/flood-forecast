@@ -81,6 +81,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DamLevel'
+  /forecast:
+    get:
+      summary: Returns a list of flood forecast of Thailand.
+      tags:
+        - forecast
+      operationId: controller.get_forecast
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Forecast'
+  /forecast/{Type}:
+    parameters:
+    - name: Type
+      in: path
+      required: true
+      description: Type detail of the flood
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified flood type
+      tags: 
+        - forecast
+      operationId: controller.get_forecast_details
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forecast'
 
 components:
   schemas:
@@ -106,4 +141,19 @@ components:
           type: integer
         can_reveive_more:
           type: integer
+    Forecast:
+      type: object
+      properties:
+        month:
+          type: string
+        TAMBON_T:
+          type: string
+        AMPHOE_T:
+          type: string
+        PROV_T:
+          type: string
+        Type:
+          type: string
+        sector:
+          type: string
     

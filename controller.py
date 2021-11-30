@@ -51,3 +51,23 @@ def get_dam_level_details(sector):
         """, [pro])
         result = [models.DamLevel(*row) for row in cs.fetchall()]
         return result
+
+def get_forecast():
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT month, TAMBON_T, AMPHOE_T, PROV_T, Type, sector
+            FROM forecast
+        """)
+        result = [models.Forecast(*row) for row in cs.fetchall()]
+        return result
+
+def get_forecast_details(Type):
+    pro = '%' + Type + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT month, TAMBON_T, AMPHOE_T, PROV_T, sector
+            FROM forecast
+            WHERE Type like %s
+        """, [pro])
+        result = [models.Forecast(*row) for row in cs.fetchall()]
+        return result
