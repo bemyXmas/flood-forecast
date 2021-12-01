@@ -24,7 +24,7 @@ sys.path.append(OPENAPI_AUTOGEN_DIR)
 
 try:
     import connexion
-except ModuleNotFoundError:
+except ImportError:
     print("Please install all required packages by running:"
           " pip install -r requirements.txt")
     exit(1)
@@ -34,7 +34,7 @@ from openapi_server import encoder
 app = connexion.App(__name__,)
 app.app.json_encoder = encoder.JSONEncoder
 app.add_api('openapi/flood-api.yaml',
-            arguments={'title': 'Thailand Disaster API'},
+            arguments={'title': ' Flood forecast API'},
             pythonic_params=True)
 app.run(port=8080,debug=True)
 
