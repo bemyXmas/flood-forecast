@@ -116,6 +116,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forecast'
+  /questionniare:
+    get:
+      summary: Returns a list of flood questionniare that we collected.
+      tags:
+        - questionniare
+      operationId: controller.get_questionniare
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Questionniare'
+  /questionniare/{province}:
+    parameters:
+    - name: province
+      in: path
+      required: true
+      description: detail of questionniare by province
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified flood type
+      tags: 
+        - questionniare
+      operationId: controller.get_questionniare_details
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questionniare'
+  
 
 components:
   schemas:
@@ -156,4 +192,25 @@ components:
           type: string
         sector:
           type: string
+    Questionniare:
+      type: object
+      properties:
+        sector:
+          type: string
+        province:
+          type: string
+        amphoe:
+          type: string
+        warning_freq:
+          type: string
+        warning_wat:
+          type: string
+        want_warning_way:
+          type: string
+        type:
+          type: string
+        flood_freq:
+          type: string
+        rain_freq:
+          type: integer
     

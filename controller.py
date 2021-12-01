@@ -71,3 +71,23 @@ def get_forecast_details(Type):
         """, [pro])
         result = [models.Forecast(*row) for row in cs.fetchall()]
         return result
+
+def get_questionniare():
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT sector, province, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
+            FROM survey
+        """)
+        result = [models.Questionniare(*row) for row in cs.fetchall()]
+        return result
+
+def get_questionniare_details(province):
+    pro = '%' + province + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT sector, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
+            FROM survey
+            WHERE province like %s
+        """, [pro])
+        result = [models.Questionniare(*row) for row in cs.fetchall()]
+        return result
