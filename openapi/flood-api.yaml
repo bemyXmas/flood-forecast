@@ -101,6 +101,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DamLevel'
+          links:
+            damLevelSector:
+              operationId: controller.get_dam_level_date_reten
+              parameters:
+                sector: $response.body#/sector
+  /damlevel/{sector}/water:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: sector detail of the dam water
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified dam water
+      tags: 
+        - damlevel
+      operationId: controller.get_dam_level_date_reten
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DamLevelWater'
   /forecast:
     get:
       summary: Returns a list of flood forecast of Thailand.
@@ -116,19 +143,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Forecast'
-  /forecast/{Type}:
+  /forecast/{province}:
     parameters:
-    - name: Type
+    - name: province
       in: path
       required: true
-      description: Type detail of the flood
+      description: province detail of the flood forecast
       schema:
         type: string
     get:
-      summary: Returns complete details of the specified flood type
+      summary: Returns complete details of the specified province flood forecast
       tags: 
         - forecast
-      operationId: controller.get_forecast_details
+      operationId: controller.get_forecast_details_province
       responses:
         200:
           description: Success
@@ -260,6 +287,13 @@ components:
         water_retention:
           type: integer
         can_reveive_more:
+          type: integer
+    DamLevelWater:
+      type: object
+      properties:
+        date:
+          type: string
+        water_retention:
           type: integer
     Forecast:
       type: object

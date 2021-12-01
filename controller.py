@@ -22,13 +22,13 @@ def get_weather_report():
         return result
 
 def get_weather_report_details(sector):
-    pro = '%' + sector + '%'
+    prov = '%' + sector + '%'
     with db_cursor() as cs:
         cs.execute("""
             SELECT province, main, humidity, description, ts
             FROM owr
             WHERE sector like %s
-        """, [pro])
+        """, [prov])
         result = [models.WeatherReport(*row) for row in cs.fetchall()]
         return result
 
@@ -42,14 +42,25 @@ def get_dam_level():
         return result
 
 def get_dam_level_details(sector):
-    pro = '%' + sector + '%'
+    prov = '%' + sector + '%'
     with db_cursor() as cs:
         cs.execute("""
-            SELECT date, water_retention, can_receive_more
+            SELECT date,sector, water_retention, can_receive_more
             FROM damlevel
             WHERE sector like %s
-        """, [pro])
+        """, [prov])
         result = [models.DamLevel(*row) for row in cs.fetchall()]
+        return result
+
+def get_dam_level_date_reten(sector):
+    prov = '%' + sector + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT date, water_retention
+            FROM damlevel
+            WHERE sector like %s
+        """, [prov])
+        result = [models.DamLevelWater(*row) for row in cs.fetchall()]
         return result
 
 def get_forecast():
@@ -61,14 +72,14 @@ def get_forecast():
         result = [models.Forecast(*row) for row in cs.fetchall()]
         return result
 
-def get_forecast_details(Type):
-    pro = '%' + Type + '%'
+def get_forecast_details_province(province):
+    prov = '%' + province + '%'
     with db_cursor() as cs:
         cs.execute("""
-            SELECT month, TAMBON_T, AMPHOE_T, PROV_T, sector
+            SELECT month, TAMBON_T, AMPHOE_T, PROV_T, Type, sector
             FROM forecast
-            WHERE Type like %s
-        """, [pro])
+            WHERE PROV_T like %s
+        """, [prov])
         result = [models.Forecast(*row) for row in cs.fetchall()]
         return result
 
@@ -82,13 +93,13 @@ def get_questionnaire():
         return result
 
 def get_questionnaire_details(province):
-    pro = '%' + province + '%'
+    prov = '%' + province + '%'
     with db_cursor() as cs:
         cs.execute("""
             SELECT sector, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
             FROM survey
             WHERE province like %s
-        """, [pro])
+        """, [prov])
         result = [models.Questionnaire(*row) for row in cs.fetchall()]
         return result
 

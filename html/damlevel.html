@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>North dam water level</title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<body>
+  <div id="chart" style="width:100%;height:75vh;"></div>
+  <script>
+    async function createChart() {
+      var resp = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `{
+                    damlevel {
+                    sector
+                    damLevelSector{
+                        date
+                        waterRetention
+                    }
+                    }
+                }`
+        })
+      });
+      var json = await resp.json();
+      var table = json.data;
+
+      var data = [{
+        x: table.damlevel[0].damLevelSector.map(row => row.date),
+        y: table.damlevel[0].damLevelSector.map(row => row.waterRetention),
+        type: 'line',
+        name: table.damlevel[0].sector,
+      },
+      {
+        x: table.damlevel[1].damLevelSector.map(row => row.date),
+        y: table.damlevel[1].damLevelSector.map(row => row.waterRetention),
+        type: 'line',
+        name: table.damlevel[1].sector,
+      },
+      {
+        x: table.damlevel[2].damLevelSector.map(row => row.date),
+        y: table.damlevel[2].damLevelSector.map(row => row.waterRetention),
+        type: 'line',
+        name: table.damlevel[2].sector,
+      },
+      {
+        x: table.damlevel[3].damLevelSector.map(row => row.date),
+        y: table.damlevel[3].damLevelSector.map(row => row.waterRetention),
+        type: 'line',
+        name: table.damlevel[3].sector,
+      }
+    ];
+
+      console.log(data);
+      var layout = {
+          title: 'Thailand sector Dam water level',
+          xaxis: {
+              title: 'Date',
+
+          },
+          yaxis: {
+              title: 'Water Retention',
+          }
+      };
+      var config = { responsive: true };
+      Plotly.newPlot("chart", data, layout, config);
+    }
+    createChart();
+  </script>
+</body>
+</html>
