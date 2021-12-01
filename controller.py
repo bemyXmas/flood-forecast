@@ -25,7 +25,7 @@ def get_weather_report_details(sector):
     prov = '%' + sector + '%'
     with db_cursor() as cs:
         cs.execute("""
-            SELECT province, main, humidity, description, ts
+            SELECT sector, main, humidity, description, ts, province
             FROM owr
             WHERE sector like %s
         """, [prov])
@@ -83,6 +83,7 @@ def get_forecast_details_province(province):
         result = [models.Forecast(*row) for row in cs.fetchall()]
         return result
 
+
 def get_questionnaire():
     with db_cursor() as cs:
         cs.execute("""
@@ -96,7 +97,7 @@ def get_questionnaire_details(province):
     prov = '%' + province + '%'
     with db_cursor() as cs:
         cs.execute("""
-            SELECT sector, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
+            SELECT sector, province, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
             FROM survey
             WHERE province like %s
         """, [prov])
@@ -149,4 +150,16 @@ def get_owr_avg_humidity(sector):
                 GROUP BY sector
             """, [sec])
         result = [models.OwrHumidity(*row) for row in cs.fetchall()]
+        return result
+
+def get_humidity_and_rain_freq(sector):
+    sec = '%' + sector + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+                SELECT DISTINCT(o.sector), o.humidity, q.rain_freq, q.province
+                FROM owr o
+                INNER JOIN survey q
+                WHERE o.sector like %s and o.sector = q.sector
+            """, [sec])
+        result = [models.HumidityRainFreq(*row) for row in cs.fetchall()]
         return result

@@ -46,6 +46,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WeatherReport'
+          links:
+            humidRainSector:
+              operationId: controller.get_humidity_and_rain_freq
+              parameters:
+                sector: $response.body#/sector
+  /weather-report/{sector}/humidrain:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: sector name
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified sector humidity and rain
+      tags: 
+        - weatherreport
+      operationId: controller.get_humidity_and_rain_freq
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HumidityRainFreq'
   /weather-report/{sector}/avg:
     parameters:
     - name: sector
@@ -265,7 +292,7 @@ components:
     WeatherReport:
       type: object
       properties:
-        province:
+        sector:
           type: string
         main:
           type: string
@@ -275,7 +302,7 @@ components:
           type: string
         ts:
           type: string
-        sector:
+        province:
           type: string
     DamLevel:
       type: object
@@ -390,4 +417,15 @@ components:
           type: string
         avg_humidity:
           type: integer
-    
+    HumidityRainFreq:
+      type: object
+      properties:
+        sector:
+          type: string
+        humidity:
+          type: integer
+        rain_freq:
+          type: integer
+        province:
+          type: string
+        
