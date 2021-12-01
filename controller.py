@@ -72,16 +72,16 @@ def get_forecast_details(Type):
         result = [models.Forecast(*row) for row in cs.fetchall()]
         return result
 
-def get_questionniare():
+def get_questionnaire():
     with db_cursor() as cs:
         cs.execute("""
             SELECT sector, province, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
             FROM survey
         """)
-        result = [models.Questionniare(*row) for row in cs.fetchall()]
+        result = [models.questionnaire(*row) for row in cs.fetchall()]
         return result
 
-def get_questionniare_details(province):
+def get_questionnaire_details(province):
     pro = '%' + province + '%'
     with db_cursor() as cs:
         cs.execute("""
@@ -89,5 +89,18 @@ def get_questionniare_details(province):
             FROM survey
             WHERE province like %s
         """, [pro])
-        result = [models.Questionniare(*row) for row in cs.fetchall()]
+        result = [models.questionnaire(*row) for row in cs.fetchall()]
         return result
+
+def get_rain_freq_and_damlevel(sector):
+    # sec = '%' + sector + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+            SELECT q.sector, q.province, q.rain_freq, d.can_receive_more, d.water_retention 
+            FROM survey q 
+            INNER JOIN damlevel d 
+            WHERE d.sector = q.sector and q.sector like %s
+        """, [sector])
+        result = cs.fetchall()
+        return models.RainFreqLevel(*result)
+

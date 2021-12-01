@@ -116,12 +116,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forecast'
-  /questionniare:
+  /questionnaire:
     get:
-      summary: Returns a list of flood questionniare that we collected.
+      summary: Returns a list of flood questionnaire that we collected.
       tags:
-        - questionniare
-      operationId: controller.get_questionniare
+        - questionnaire
+      operationId: controller.get_questionnaire
       responses:
         200:
           description: Success
@@ -130,27 +130,47 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Questionniare'
-  /questionniare/{province}:
+                  $ref: '#/components/schemas/Questionnaire'
+  /questionnaire/{province}:
     parameters:
     - name: province
       in: path
       required: true
-      description: detail of questionniare by province
+      description: detail of questionnaire by province
       schema:
         type: string
     get:
       summary: Returns complete details of the specified flood type
       tags: 
-        - questionniare
-      operationId: controller.get_questionniare_details
+        - questionnaire
+      operationId: controller.get_questionnaire_details
       responses:
         200:
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Questionniare'
+                $ref: '#/components/schemas/Questionnaire'
+  /questionnaire/{sector}:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: rain frequency compare to water level in damlevel
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the sector
+      tags: 
+        - questionnaire
+      operationId: controller.get_rain_freq_and_damlevel
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RainFreqLevel'
   
 
 components:
@@ -192,7 +212,7 @@ components:
           type: string
         sector:
           type: string
-    Questionniare:
+    Questionnaire:
       type: object
       properties:
         sector:
@@ -203,7 +223,7 @@ components:
           type: string
         warning_freq:
           type: string
-        warning_wat:
+        warning_way:
           type: string
         want_warning_way:
           type: string
@@ -212,5 +232,18 @@ components:
         flood_freq:
           type: string
         rain_freq:
+          type: integer
+    RainFreqLevel:
+      type: object
+      properties:
+        sector:
+          type: string
+        province:
+          type: string
+        rain_freq:
+          type: integer
+        can_receive_more:
+          type: integer
+        water_retention:
           type: integer
     
