@@ -15,19 +15,19 @@ def db_cursor():
 def get_weather_report():
     with db_cursor() as cs:
         cs.execute("""
-            SELECT country, main, humidity, description
+            SELECT sector, main, humidity, description, ts, province
             FROM owr
         """)
         result = [models.WeatherReport(*row) for row in cs.fetchall()]
         return result
 
-def get_weather_report_details(country):
-    pro = '%' + country + '%'
+def get_weather_report_details(sector):
+    pro = '%' + sector + '%'
     with db_cursor() as cs:
         cs.execute("""
-            SELECT main, humidity, description
+            SELECT province, main, humidity, description, ts
             FROM owr
-            WHERE country like %s
+            WHERE sector like %s
         """, [pro])
         result = [models.WeatherReport(*row) for row in cs.fetchall()]
         return result
@@ -78,7 +78,7 @@ def get_questionnaire():
             SELECT sector, province, amphoe, warning_freq, warning_way, want_warning_way, type, flood_freq, rain_freq
             FROM survey
         """)
-        result = [models.questionnaire(*row) for row in cs.fetchall()]
+        result = [models.Questionnaire(*row) for row in cs.fetchall()]
         return result
 
 def get_questionnaire_details(province):
@@ -89,18 +89,53 @@ def get_questionnaire_details(province):
             FROM survey
             WHERE province like %s
         """, [pro])
-        result = [models.questionnaire(*row) for row in cs.fetchall()]
+        result = [models.Questionnaire(*row) for row in cs.fetchall()]
         return result
 
-def get_rain_freq_and_damlevel(sector):
-    # sec = '%' + sector + '%'
+def get_rain_freq_and_damlevel(province):
+    prov = '%' + province + '%'
     with db_cursor() as cs:
         cs.execute("""
             SELECT q.sector, q.province, q.rain_freq, d.can_receive_more, d.water_retention 
             FROM survey q 
             INNER JOIN damlevel d 
-            WHERE d.sector = q.sector and q.sector like %s
-        """, [sector])
-        result = cs.fetchall()
-        return models.RainFreqLevel(*result)
+            WHERE  q.province like %s and d.sector = q.sector
+        """, [prov])
+        result = [models.RainFreqLevel(*row) for row in cs.fetchall()]
+        return result
 
+def get_forecast_damlevel(province):
+    prov = '%' + province + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+           SELECT f.sector, f.`PROV_T`, f.`Type`, d.can_receive_more, d.water_retention, d.date
+           FROM forecast f 
+           INNER JOIN damlevel d 
+           WHERE d.sector = f.sector and f.PROV_T like %s
+        """, [prov])
+        result = [models.ForecastDamLevel(*row) for row in cs.fetchall()]
+        return result
+
+def get_qestion_avg_rain_freq(sector):
+    sec = '%' + sector + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+                SELECT sector, ROUND(AVG(rain_freq),2) avg_rain_freq
+                FROM survey
+                WHERE sector like %s
+                GROUP BY sector
+            """, [sec])
+        result = [models.QuestionRainFreq(*row) for row in cs.fetchall()]
+        return result
+
+def get_owr_avg_humidity(sector):
+    sec = '%' + sector + '%'
+    with db_cursor() as cs:
+        cs.execute("""
+                SELECT sector, ROUND(AVG(humidity),2) avg_rain_freq
+                FROM owr
+                WHERE sector like %s
+                GROUP BY sector
+            """, [sec])
+        result = [models.OwrHumidity(*row) for row in cs.fetchall()]
+        return result

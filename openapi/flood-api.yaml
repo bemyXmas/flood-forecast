@@ -26,16 +26,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/WeatherReport'
-  /weather-report/{country}:
+  /weather-report/{sector}:
     parameters:
-    - name: country
+    - name: sector
       in: path
       required: true
-      description: country name
+      description: sector name
       schema:
         type: string
     get:
-      summary: Returns complete details of the specified country weather report
+      summary: Returns complete details of the specified sector weather report
       tags: 
         - weatherreport
       operationId: controller.get_weather_report_details
@@ -46,6 +46,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WeatherReport'
+  /weather-report/{sector}/avg:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: sector name
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the sector humidity avg
+      tags: 
+        - weatherreport
+      operationId: controller.get_owr_avg_humidity
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwrHumidity'
   /damlevel:
     get:
       summary: Returns a list of dam water level in sector of Thailand.
@@ -116,6 +136,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forecast'
+  /forecast/{province}/crossdam:
+    parameters:
+    - name: province
+      in: path
+      required: true
+      description: province detail of the flood forecast and dam water level
+      schema:
+        type: string
+    get:
+      summary: Returns complete details of the specified province flood.
+      tags: 
+        - forecast
+      operationId: controller.get_forecast_damlevel
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastDamLevel'
   /questionnaire:
     get:
       summary: Returns a list of flood questionnaire that we collected.
@@ -151,16 +191,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Questionnaire'
-  /questionnaire/{sector}:
+  /questionnaire/{province}/crossdam:
     parameters:
-    - name: sector
+    - name: province
       in: path
       required: true
-      description: rain frequency compare to water level in damlevel
+      description: province detail of the questionnaire and dam water level
       schema:
         type: string
     get:
-      summary: Returns complete details of the sector
+      summary: Returns complete details of the specified province flood.
       tags: 
         - questionnaire
       operationId: controller.get_rain_freq_and_damlevel
@@ -171,6 +211,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RainFreqLevel'
+  /questionnaire/{sector}/avg:
+    parameters:
+    - name: sector
+      in: path
+      required: true
+      description: detail of avg rain frequency from questionnaire
+      schema:
+        type: string
+    get:
+      summary: Returns complete details avg rain frequency from questionnaire.
+      tags: 
+        - questionnaire
+      operationId: controller.get_qestion_avg_rain_freq
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionRainFreq'
   
 
 components:
@@ -178,13 +238,17 @@ components:
     WeatherReport:
       type: object
       properties:
-        country:
+        province:
           type: string
         main:
           type: string
         humidity:
           type: integer
         description:
+          type: string
+        ts:
+          type: string
+        sector:
           type: string
     DamLevel:
       type: object
@@ -245,5 +309,51 @@ components:
         can_receive_more:
           type: integer
         water_retention:
+          type: integer
+    ForecastDamLevel:
+      type: object
+      properties:
+        sector:
+          type: string
+        province:
+          type: string
+        type:
+          type: string
+        can_receive_more:
+          type: integer
+        water_retention:
+          type: integer
+        date:
+          type: string
+    ReportForecast:
+      type: object
+      properties:
+        sector:
+          type: string
+        humidity:
+          type: integer
+        main:
+          type: string
+        description:
+          type: string
+        ts:
+          type: string
+        Type:
+          type: string
+        month:
+          type: string
+    QuestionRainFreq:
+      type: object
+      properties:
+        sector:
+          type: string
+        avg_rain_freq:
+          type: integer
+    OwrHumidity:
+      type: object
+      properties:
+        sector:
+          type: string
+        avg_humidity:
           type: integer
     
