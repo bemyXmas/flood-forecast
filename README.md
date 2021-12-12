@@ -10,6 +10,29 @@ Sirapop Kunjiak            6210546447  Software and knowledge engineering Kasets
 Sarocha Sittipon           6210546439  Software and knowledge engineering Kasetsart University
 
 
+### Project Overview
+There’s a big flood in Thailand before like year 2554.
+And there’s also a frequent flood in Thai around this
+Time of the year and even if Thai have a lot of flood
+data collection but there’s a still a few API for our 
+country
+
+This API provides information about flood happening in Thailand:
+
+- Water level in the dam data from EGAT.
+- Flood forecast data from Department of Water Resource.
+- Weather Forecasting from Openweather API.
+- Rainfall data gathered by our group in Google form.
+
+
+### API features
+![unknown (1)](https://user-images.githubusercontent.com/59832742/145714681-dbd8add7-f0e8-4e6e-b861-f39a63d63d9c.png)
+![unknown (2)](https://user-images.githubusercontent.com/59832742/145714693-fd73d1d3-9242-4cc9-b041-3eab7f1b0d54.png)
+
+
+
+
+
 ## Installation
 1. Clone the repo
    ```sh
